@@ -28,51 +28,62 @@ To Implement ELGAMAL ALGORITHM
 #include <stdio.h>
 #include <math.h>
 
+// Function to compute modular exponentiation (base^exp % mod)
 long long int modExp(long long int base, long long int exp, long long int mod) {
-    long long int result = 1;
-    while (exp > 0) {
-        if (exp % 2 == 1) {
-            result = (result * base) % mod;
-        }
-        base = (base * base) % mod;
-        exp = exp / 2;
-    }
-    return result;
+  long long int result = 1;
+  while (exp > 0) {
+      if (exp % 2 == 1) {
+          result = (result * base) % mod;
+      }
+      base = (base * base) % mod;
+      exp = exp / 2;
+  }
+  return result;
 }
 
 int main() {
-    long long int p, g, privateKeyA, publicKeyA;
-    long long int k, message, c1, c2, decryptedMessage;
+  long long int p, g, privateKeyA, publicKeyA;
+  long long int k, message, c1, c2, decryptedMessage;
 
-    printf("Enter a large prime number (p): ");
-    scanf("%lld", &p);
-    printf("Enter a generator (g): ");
-    scanf("%lld", &g);
+  // Step 1: Input a large prime number (p) and a generator (g)
+  printf("Enter a large prime number (p): ");
+  scanf("%lld", &p);
+  printf("Enter a generator (g): ");
+  scanf("%lld", &g);
 
-    printf("Enter Alice's private key: ");
-    scanf("%lld", &privateKeyA);
+  // Step 2: Alice inputs her private key
+  printf("Enter Alice's private key: ");
+  scanf("%lld", &privateKeyA);
 
-    publicKeyA = modExp(g, privateKeyA, p);
-    printf("Alice's public key: %lld\n", publicKeyA);
+  // Step 3: Compute Alice's public key (publicKey = g^privateKeyA mod p)
+  publicKeyA = modExp(g, privateKeyA, p);
+  printf("Alice's public key: %lld\n", publicKeyA);
 
-    printf("Enter the message to encrypt (as a number): ");
-    scanf("%lld", &message);
-    printf("Enter a random number k: ");
-    scanf("%lld", &k);
+  // Step 4: Bob inputs the message to be encrypted and selects a random k
+  printf("Enter the message to encrypt (as a number): ");
+  scanf("%lld", &message);
+  printf("Enter a random number k: ");
+  scanf("%lld", &k);
 
-    c1 = modExp(g, k, p);
-    c2 = (message * modExp(publicKeyA, k, p)) % p;
-    printf("Encrypted message (c1, c2): (%lld, %lld)\n", c1, c2);
+  // Step 5: Bob computes ciphertext (c1 = g^k mod p, c2 = (message * publicKeyA^k) mod p)
+  c1 = modExp(g, k, p);
+  c2 = (message * modExp(publicKeyA, k, p)) % p;
+  printf("Encrypted message (c1, c2): (%lld, %lld)\n", c1, c2);
 
-    decryptedMessage = (c2 * modExp(c1, p - 1 - privateKeyA, p)) % p;
-    printf("Decrypted message: %lld\n", decryptedMessage);
+  // Step 6: Alice decrypts the message (decryptedMessage = (c2 * c1^(p-1-privateKeyA)) mod p)
+  decryptedMessage = (c2 * modExp(c1, p - 1 - privateKeyA, p)) % p;
+  printf("Decrypted message: %lld\n", decryptedMessage);
 
-    return 0;
+  return 0;
 }
+
+
 ```
 
+
 ## Output:
-![Screenshot 2025-05-15 091209](https://github.com/user-attachments/assets/07d5be3f-fcd9-4149-ae32-94586b02750f)
+
+![image](https://github.com/user-attachments/assets/0f79b833-dad1-4577-854d-112c7efbd0ce)
 
 
 ## Result:
